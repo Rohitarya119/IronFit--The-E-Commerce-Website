@@ -1,65 +1,78 @@
-# Deployment Guide: Vercel (Frontend) & Railway (Backend)
+# Deployment Guide: Render (Full Stack)
 
-This guide will help you deploy your E-commerce application.
+This guide will help you deploy your E-commerce application (Frontend + Backend + Database) entirely on [Render](https://render.com).
 
 ## Prerequisites
 - A GitHub account.
-- Accounts on [Vercel](https://vercel.com) and [Railway](https://railway.app).
-- The latest code pushed to a GitHub repository.
+- A [Render](https://render.com) account.
+- The latest code pushed to your GitHub repository.
 
 ---
 
-## Part 1: Prepare the Backend (Railway)
+## Part 1: Create the Database (PostgreSQL)
 
-1.  **Log in to Railway** and click **New Project** > **Deploy from GitHub repo**.
-2.  Select your repository.
-3.  **Important**: Since your backend is in a stored folder, you must configure the **Root Directory**.
-    - Click on the new service card.
-    - Go to **Settings** > **Root Directory** and set it to `/backend`.
-4.  **Add a Database**:
-    - Right-click on the canvas (or click "New") -> **Database** -> **PostgreSQL**.
-    - This will create a connected database service.
-5.  **Configure Environment Variables**:
-    - Click on your **Backend Service** (the Java app).
-    - Go to the **Variables** tab.
-    - Add the variables using the values from your PostgreSQL service (click the Postgres card > **Variables** to find these):
-        - `DB_URL`: Copy `DATABASE_URL` (starts with `postgresql://...`)
-        - `DB_USERNAME`: Copy `POSTGRES_USER`
-        - `DB_PASSWORD`: Copy `POSTGRES_PASSWORD`
-    - Add these additional variables:
-        - `JWT_SECRET`: (Generate a long random string or use `5367566B59703373367639792F423F4528482B4D6251655468576D5A71347437`)
-        - `PORT`: `8085` (Optional, but good to be explicit)
-        - `ALLOWED_ORIGINS`: `*` (Temporarily allow all to test, changed later to your Vercel URL).
-6.  **Deploy**: Railway should automatically deploy. Wait for the green "Active" checkmark.
-7.  **Get Public URL**:
-    - Go to **Settings** -> **Networking** -> **Generate Domain**.
-    - Copy this URL (e.g., `https://ecommerce-production.up.railway.app`).
+1.  **Log in to Render** and click **New +** > **PostgreSQL**.
+2.  **Name**: `ecommerce-db` (or any name you like).
+3.  **Region**: Choose the one closest to you (e.g., specific region like Ohio, Frankfurt, etc).
+4.  **Database**: `ironfit` (this is our specific DB name).
+5.  **User**: `postgres` (or leave default).
+6.  **Plan**: Select **Free**.
+7.  Click **Create Database**.
+8.  **Wait** for it to become "Available".
+9.  Copy the **Internal Database URL** (should start with `postgres://...`). You will need this for the Backend.
 
 ---
 
-## Part 2: Prepare the Frontend (Vercel)
+## Part 2: Deploy the Backend (Web Service)
 
-1.  **Log in to Vercel** and click **Add New** > **Project**.
-2.  Import your GitHub repository.
-3.  **Configure Project**:
-    - **Framework Preset**: Vite (should be auto-detected).
-    - **Root Directory**: Leave as default (`./`) since `package.json` is in the root.
+1.  Click **New +** > **Web Service**.
+2.  Select **Build and deploy from a Git repository**.
+3.  Connect your GitHub account and select your repository (`IronFit--The-E-Commerce-Website`).
+4.  **Configuration**:
+    - **Name**: `ecommerce-backend`
+    - **Region**: Same as your database.
+    - **Branch**: `main`
+    - **Root Directory**: `backend` (Important!)
+    - **Runtime**: **Docker** (Render will automatically detect the `Dockerfile` inside `backend/`).
+    - **Instance Type**: **Free**.
+5.  **Environment Variables**:
+    - Scroll down to "Environment Variables" and add:
+      - `DB_URL`: Paste the **Internal Database URL** you copied from the database.
+      - `DB_USERNAME`: `postgres` (or whatever username is in the connection details).
+      - `DB_PASSWORD`: Copy the password from the database details.
+      - `JWT_SECRET`: (Generate a secure random string).
+      - `ALLOWED_ORIGINS`: `*` (We will update this to the frontend URL later).
+6.  Click **Create Web Service**.
+7.  Render will start building. This might take a few minutes.
+8.  Once live, copy the **Backend Service URL** (e.g., `https://ecommerce-backend.onrender.com`).
+
+---
+
+## Part 3: Deploy the Frontend (Static Site)
+
+1.  Go to Dashboard, click **New +** > **Static Site**.
+2.  Connect the same GitHub repository.
+3.  **Configuration**:
+    - **Name**: `ecommerce-frontend`
+    - **Branch**: `main`
+    - **Root Directory**: `./` (Leave default)
+    - **Build Command**: `npm install && npm run build`
+    - **Publish Directory**: `dist`
 4.  **Environment Variables**:
-    - Expand the **Environment Variables** section.
-    - Add `VITE_API_URL`.
-    - Value: `https://<YOUR_RAILWAY_URL>/api` (Paste your Railway URL and append `/api`).
-      - Example: `https://ecommerce-production.up.railway.app/api`
-5.  **Deploy**: Click **Deploy**.
-6.  Once deployed, copy your **Vercel Deployment URL** (e.g., `https://your-project.vercel.app`).
+    - Add `VITE_API_URL`: Paste your **Backend Service URL** (e.g., `https://ecommerce-backend.onrender.com/api`).
+      - **Important**: Make sure to append `/api` at the end.
+5.  Click **Create Static Site**.
+6.  Wait for the build to finish.
+7.  Once deployed, copy your **Frontend URL** (e.g., `https://ecommerce-frontend.onrender.com`).
 
 ---
 
-## Part 3: Final Security Config
+## Part 4: Final Security Config
 
-1.  Go back to **Railway**.
-2.  Select your Backend Service > **Variables**.
-3.  Update `ALLOWED_ORIGINS` to your actual Vercel URL (e.g., `https://your-project.vercel.app`).
-    - Note: Do not include trailing slashes.
-4.  Railway will redeploy automatically.
+1.  Go back to your **Backend Service** on Render.
+2.  Go to **Environment**.
+3.  Edit `ALLOWED_ORIGINS` and set it to your **Frontend URL** (e.g., `https://ecommerce-frontend.onrender.com`).
+    - Do not include a trailing slash.
+4.  Save Changes. Render will automatically redeploy the backend.
 
-Your app is now live!
+Everything is now hosted on Render! 🚀
