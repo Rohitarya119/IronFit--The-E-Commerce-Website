@@ -1,0 +1,75 @@
+[
+    {
+        "id": 1,
+        "name": "Seamless Sports Bra",
+        "price": 48.0,
+        "rating": 4.9,
+        "reviews": 324,
+        "image": "/black-sports-bra-women-gym-seamless.jpg",
+        "badge": "Best Seller",
+        "colors": [
+            "black",
+            "white",
+            "pink"
+        ],
+        "category": "Sports Bras"
+    },
+    {
+        "id": 2,
+        "name": "High-Waist Leggings",
+        "price": 68.0,
+        "rating": 4.9,
+        "reviews": 456,
+        "image": "/black-high-waist-leggings-women-gym-athletic.jpg",
+        "badge": "Top Rated",
+        "colors": [
+            "black",
+            "gray",
+            "navy"
+        ],
+        "category": "Leggings"
+    },
+    {
+        "id": 3,
+        "name": "Cropped Tank Top",
+        "price": 35.0,
+        "originalPrice": 45.0,
+        "rating": 4.7,
+        "reviews": 189,
+        "image": "/pink-cropped-tank-top-women-gym.jpg",
+        "badge": "Sale",
+        "colors": [
+            "black",
+            "white",
+            "pink"
+        ],
+        "category": "Tank Tops"
+    },
+    {
+        "id": 4,
+        "name": "Training Shorts",
+        "price": 45.0,
+        "rating": 4.8,
+        "reviews": 167,
+        "image": "/gray-training-shorts-women-gym.jpg",
+        "colors": [
+            "black",
+            "gray"
+        ],
+        "category": "Shorts"
+    },
+    {
+        "id": 5,
+        "name": "Zip-Up Sports Jacket",
+        "price": 85.0,
+        "rating": 4.8,
+        "reviews": 98,
+        "image": "/black-zip-up-jacket-women-gym.jpg",
+        "badge": "New",
+        "colors": [
+            "black",
+            "pink"
+        ],
+        "category": "Jackets"
+    }
+]
